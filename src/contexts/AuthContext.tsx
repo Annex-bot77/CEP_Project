@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
-  signUp: (email: string, password: string, fullName: string, userType: UserType, phone?: string, location?: string) => Promise<{ error: AuthError | null }>;
+  signUp: (email: string, password: string, fullName: string, userType: UserType, phone?: string, location?: string, rcNumber?: string) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -67,7 +67,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fullName: string,
     userType: UserType,
     phone?: string,
-    location?: string
+    location?: string,
+    rcNumber?: string
   ) => {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -84,6 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user_type: userType,
         phone: phone || null,
         location: location || null,
+        rc_number: rcNumber || null,
       });
 
       if (profileError) {

@@ -15,6 +15,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [location, setLocation] = useState('');
+  const [rcNumber, setRcNumber] = useState('');
   const [userType, setUserType] = useState<UserType>('farmer');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,13 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
     try {
       if (isSignUp) {
-        const { error } = await signUp(email, password, fullName, userType, phone, location);
+        if (userType === 'tractor_owner' && !rcNumber) {
+          setError('RC Number is required for tractor owners');
+          setLoading(false);
+          return;
+        }
+
+        const { error } = await signUp(email, password, fullName, userType, phone, location, rcNumber);
         if (error) {
           setError(error.message);
         } else {
@@ -156,6 +163,21 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    RC Number {userType === 'tractor_owner' && <span className="text-red-600">*</span>}
+                    {userType !== 'tractor_owner' && <span className="text-gray-500 text-xs">(Optional)</span>}
+                  </label>
+                  <input
+                    type="text"
+                    value={rcNumber}
+                    onChange={(e) => setRcNumber(e.target.value)}
+                    required={userType === 'tractor_owner'}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder={userType === 'tractor_owner' ? 'Required for tractor owners' : 'Optional'}
                   />
                 </div>
               </>

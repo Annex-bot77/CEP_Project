@@ -16,6 +16,7 @@ export interface Profile {
   location?: string;
   bio?: string;
   avatar_url?: string;
+  rc_number?: string;
   created_at: string;
   updated_at: string;
 }

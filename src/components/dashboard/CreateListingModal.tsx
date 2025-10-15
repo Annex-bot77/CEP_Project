@@ -51,6 +51,12 @@ export function CreateListingModal({ isOpen, onClose }: CreateListingModalProps)
 
         if (insertError) throw insertError;
       } else {
+        if (!profile?.rc_number) {
+          setError('RC Number is required to create tractor listings. Please update your profile with your RC Number.');
+          setLoading(false);
+          return;
+        }
+
         const { error: insertError } = await supabase.from('tractor_listings').insert({
           owner_id: user?.id,
           title,
